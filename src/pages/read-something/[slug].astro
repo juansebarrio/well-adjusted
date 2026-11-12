@@ -1,0 +1,68 @@
+---
+import { render } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Stamp from '../../components/Stamp.astro';
+import Enrolment from '../../components/Enrolment.astro';
+import { essay as copy, read } from '../../copy';
+import { getEssays, hasBody, typo } from '../../lib';
+
+export async function getStaticPaths() {
+  const essays = await getEssays();
+  return essays.filter(hasBody).map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+interface Props { entry: CollectionEntry<'essays'> }
+const { entry } = Astro.props;
+const { filedUnder, readingTime, substackUrl, draft } = entry.data;
+const title = typo(entry.data.title);
+const deck = typo(entry.data.deck);
+const { Content } = await render(entry);
+---
+<Base title={title} description={deck} ogType="article" noindex={draft}>
+  <article class="shell mt-12 sm:mt-16">
+    <div class="sheet">
+      <p class="label sheet-margin wide:pt-3">{copy.formRef}</p>
+      <header class="sheet-body">
+        <h1 class="display">{title}</h1>
+        <p class="lede mt-5 italic">{deck}</p>
+        <p class="label mt-6">{read.filedUnder}: {filedUnder} · {read.readingTime}: {readingTime}</p>
+        {draft && <p class="notice mt-1">{read.draftLabel}</p>}
+      </header>
+    </div>
+
+    <div class="sheet mt-8 sm:mt-10">
+      <div class="sheet-body prose essay" data-notes-column>
+        <Content />
+      </div>
+    </div>
+
+    <div class="sheet mt-12">
+      <div class="sheet-body flex flex-wrap items-center justify-between gap-x-10 gap-y-8">
+        {
+          substackUrl && (
+            <a class="arrow-link text-[1.25rem]" href={substackUrl} data-event="essay_open" data-props={JSON.stringify({ slug: entry.id, destination: 'substack' })}>
+              {copy.continue} →
+            </a>
+          )
+        }
+        <Stamp text={copy.stamp} tilt={-3} class="mr-2" />
+      </div>
+    </div>
+
+    <div class="sheet mt-12">
+      <div class="sheet-body max-w-[34rem]">
+        <Enrolment variant="small" id="enrol-again" />
+      </div>
+    </div>
+
+    <div class="sheet mt-10">
+      <p class="sheet-body"><a class="arrow-link" href="/read-something">← {copy.back}</a></p>
+    </div>
+  </article>
+</Base>
+
+<script>
+  // Essay footnotes stay printed at the foot of the page on every screen.
+  document.querySelector('.essay .footnotes')?.setAttribute('data-persist', '');
+</script>

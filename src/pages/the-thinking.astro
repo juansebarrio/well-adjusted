@@ -1,0 +1,36 @@
+---
+import { getEntry, render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import Stamp from '../components/Stamp.astro';
+import { thinking } from '../copy';
+
+const entry = await getEntry('pages', 'the-thinking');
+if (!entry) throw new Error('content/pages/the-thinking.md is missing');
+const { Content } = await render(entry);
+const { title, deck, draft } = entry.data;
+---
+<Base title={thinking.title} description={thinking.description}>
+  <article class="shell mt-12 sm:mt-16">
+    <div class="sheet">
+      <p class="label sheet-margin wide:pt-3">{thinking.formRef}</p>
+      <header class="sheet-body">
+        <p class="label">{thinking.eyebrow}</p>
+        <h1 class="display mt-3">{title}</h1>
+        {deck && <p class="lede mt-5 italic">{deck}</p>}
+      </header>
+      {
+        draft && (
+          <div class="sheet-aside mt-2 wide:mt-10">
+            <Stamp text={thinking.draftStamp} tilt={5} />
+            <p class="notice mt-4 max-w-[22em]">{thinking.draftNotice}</p>
+          </div>
+        )
+      }
+    </div>
+    <div class="sheet mt-10 sm:mt-12">
+      <div class="sheet-body prose" data-notes-column>
+        <Content />
+      </div>
+    </div>
+  </article>
+</Base>

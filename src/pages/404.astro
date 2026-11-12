@@ -1,0 +1,15 @@
+---
+import Base from '../layouts/Base.astro';
+import { notFound } from '../copy';
+---
+<Base title={notFound.title} noindex>
+  <div class="shell mt-12 sm:mt-16">
+    <div class="sheet">
+      <div class="sheet-body">
+        <p class="label">{notFound.micro}</p>
+        <h1 class="display mt-3">{notFound.line}</h1>
+        <p class="mt-8"><a class="arrow-link" href="/">← {notFound.back}</a></p>
+      </div>
+    </div>
+  </div>
+</Base>

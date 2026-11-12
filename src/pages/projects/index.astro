@@ -1,0 +1,22 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import SpecimenCard from '../../components/SpecimenCard.astro';
+import { projects as copy } from '../../copy';
+
+const all = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
+---
+<Base title={copy.title} description={copy.description}>
+  <div class="shell mt-12 sm:mt-16">
+    <div class="sheet">
+      <p class="label sheet-margin wide:pt-3">{copy.formRef}</p>
+      <header class="sheet-body">
+        <h1 class="display">{copy.heading}</h1>
+        <p class="lede mt-5">{copy.lede}</p>
+      </header>
+    </div>
+    <ul class="mt-12 grid gap-x-10 sm:grid-cols-2 lg:grid-cols-3">
+      {all.map((project) => <li><SpecimenCard project={project} level="h2" /></li>)}
+    </ul>
+  </div>
+</Base>

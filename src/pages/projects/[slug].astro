@@ -1,0 +1,88 @@
+---
+import { typo } from '../../lib';
+import { getCollection, render } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import TallyEmbed from '../../components/TallyEmbed.astro';
+import { projects as copy, letterOffice } from '../../copy';
+import { TALLY_LETTER_OFFICE_URL } from '../../config';
+
+export async function getStaticPaths() {
+  const all = await getCollection('projects', ({ data }) => data.page);
+  return all.map((project) => ({ params: { slug: project.id }, props: { project } }));
+}
+
+interface Props { project: CollectionEntry<'projects'> }
+const { project } = Astro.props;
+const { status, ref, placeholder } = project.data;
+const title = typo(project.data.title);
+const blurb = typo(project.data.blurb);
+const live = status === 'live';
+const { Content } = await render(project);
+const isLetterOffice = project.id === 'the-letter-office';
+---
+<Base title={title} description={live && blurb ? blurb : `${title}. ${copy.comingLine}`}>
+  <article class="shell mt-12 sm:mt-16">
+    <div class="sheet">
+      <p class="label sheet-margin wide:pt-3">{ref}</p>
+      <header class="sheet-body">
+        {
+          live ? (
+            <p class="status"><span class="status-dot" aria-hidden="true" />{copy.live}</p>
+          ) : (
+            <p class="status status-coming">{copy.coming}</p>
+          )
+        }
+        <h1 class="display mt-4">{title}</h1>
+        {live && blurb && <p class="lede mt-5">{blurb}</p>}
+        {!live && <p class="micro mt-6">{copy.comingLine}</p>}
+        {live && placeholder && <p class="notice mt-5">{copy.placeholderNotice}</p>}
+      </header>
+    </div>
+
+    {
+      live && (
+        <div class="sheet mt-8 sm:mt-10">
+          <div class="sheet-body prose" data-notes-column>
+            <Content />
+          </div>
+        </div>
+      )
+    }
+
+    {
+      live && isLetterOffice && (
+        <div class="sheet mt-12 sm:mt-14">
+          <div class="sheet-body">
+            {TALLY_LETTER_OFFICE_URL && <section class="panel" aria-labelledby="signup-title">
+              <p class="label">{letterOffice.signupField}</p>
+              <h2 id="signup-title" class="mt-2 text-[clamp(1.75rem,5vw,2.5rem)]">{letterOffice.signupHeading}</h2>
+              <div class="mt-4">
+                <TallyEmbed
+                  url={TALLY_LETTER_OFFICE_URL}
+                  title={letterOffice.formTitle}
+                  height={620}
+                  event="letter_office_signup"
+                />
+              </div>
+            </section>}
+            {!TALLY_LETTER_OFFICE_URL && (
+              <div class="border-t border-blue pt-4">
+                <p class="label">{letterOffice.signupField}</p>
+                <p class="notice mt-1">{letterOffice.unset}</p>
+              </div>
+            )}
+            <div class="mt-6 border-l border-blue pl-4">
+              <p class="label">{letterOffice.addressLabel}</p>
+              <p class="mono mt-1 max-w-[46em]">{letterOffice.addressNote}</p>
+            </div>
+          </div>
+        </div>
+      )
+    }
+
+    <div class="sheet mt-12">
+      <p class="sheet-body"><a class="arrow-link" href="/projects">← {copy.back}</a></p>
+    </div>
+  </article>
+</Base>
