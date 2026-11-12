@@ -1,0 +1,5 @@
+---
+interface Props { text: string; tilt?: number; class?: string }
+const { text, tilt = -4, class: cls = '' } = Astro.props;
+---
+<p class:list={['stamp', cls]} style={`transform: rotate(${tilt}deg)`}>{text}</p>

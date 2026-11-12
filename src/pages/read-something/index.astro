@@ -1,0 +1,59 @@
+---
+import Base from '../../layouts/Base.astro';
+import { read } from '../../copy';
+import { getEssays, hasBody, typo } from '../../lib';
+
+const essays = await getEssays();
+---
+<Base title={read.title} description={read.description}>
+  <div class="shell mt-12 sm:mt-16">
+    <div class="sheet">
+      <p class="label sheet-margin wide:pt-3">{read.formRef}</p>
+      <header class="sheet-body">
+        <h1 class="display">{read.heading}</h1>
+        <p class="lede mt-5">{read.lede}</p>
+      </header>
+    </div>
+
+    <div class="sheet mt-10 sm:mt-12">
+      <div class="sheet-body">
+        {essays.length === 0 && <p class="mono border-t border-blue pt-4">{read.empty}</p>}
+        <ol>
+          {
+            essays.map((entry, i) => {
+              const { filedUnder, readingTime, substackUrl, draft } = entry.data;
+              const [title, deck, excerpt] = [entry.data.title, entry.data.deck, entry.data.excerpt].map(typo);
+              const onSite = hasBody(entry);
+              const href = onSite ? `/read-something/${entry.id}` : substackUrl;
+              const props = JSON.stringify({ slug: entry.id, destination: onSite ? 'site' : 'substack' });
+              return (
+                <li class="border-t border-blue py-6">
+                  <article>
+                    <p class="label">
+                      No. {String(i + 1).padStart(2, '0')} · {read.filedUnder}: {filedUnder} · {readingTime}
+                    </p>
+                    {draft && <p class="notice mt-1">{read.draftLabel}</p>}
+                    <h2 class="mt-3 text-[clamp(1.75rem,5vw,2.5rem)] leading-[1.08]">
+                      {href ? (
+                        <a class="text-ink no-underline hover:text-blue" href={href} data-event="essay_open" data-props={props}>{title}</a>
+                      ) : title}
+                    </h2>
+                    <p class="mt-2 text-[1.1875rem] italic">{deck}</p>
+                    {excerpt && <p class="mt-3">{excerpt}</p>}
+                    {href && (
+                      <p class="mt-2">
+                        <a class="arrow-link" href={href} data-event="essay_open" data-props={props} aria-label={`${onSite ? read.readHere : read.readOnSubstack}: ${title}`}>
+                          {onSite ? read.readHere : read.readOnSubstack} →
+                        </a>
+                      </p>
+                    )}
+                  </article>
+                </li>
+              );
+            })
+          }
+        </ol>
+      </div>
+    </div>
+  </div>
+</Base>

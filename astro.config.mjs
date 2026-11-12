@@ -15,5 +15,6 @@ export default defineConfig({
       filter: (page) => !page.includes('/placeholder'),
     }),
   ],
-  vite: { plugins: [tailwindcss()] },
+  // No base64 fonts inside the CSS: every font stays a separate, cacheable file.
+  vite: { plugins: [tailwindcss()], build: { assetsInlineLimit: 0 } },
 });

@@ -1,0 +1,45 @@
+---
+import Base from '../layouts/Base.astro';
+import TallyEmbed from '../components/TallyEmbed.astro';
+import { hello } from '../copy';
+import { CONTACT_EMAIL, TALLY_CONTACT_URL } from '../config';
+---
+<Base title={hello.title} description={hello.description}>
+  <div class="shell mt-12 sm:mt-16">
+    <div class="sheet">
+      <p class="label sheet-margin wide:pt-3">{hello.formRef}</p>
+      <div class="sheet-body">
+        <h1 class="display">{hello.line}</h1>
+
+        <div class="mt-10">
+          <p class="label">{hello.emailLabel}</p>
+          {
+            CONTACT_EMAIL ? (
+              <p class="mt-1 text-[clamp(1.35rem,5.4vw,2rem)] break-words">
+                <a href={`mailto:${CONTACT_EMAIL}`} data-event="contact_open">{CONTACT_EMAIL}</a>
+              </p>
+            ) : (
+              <p class="notice mt-1">{hello.unsetEmail}</p>
+            )
+          }
+          <p class="micro mt-1">{hello.emailMicro}</p>
+        </div>
+
+        {TALLY_CONTACT_URL && <section class="panel mt-10" aria-labelledby="form-title">
+          <h2 id="form-title" class="label">{hello.formField}</h2>
+          <p class="micro mt-1">{hello.formMicro}</p>
+          <div class="mt-4">
+            <TallyEmbed url={TALLY_CONTACT_URL} title={hello.formTitle} height={520} />
+          </div>
+        </section>}
+        {!TALLY_CONTACT_URL && (
+          <div class="mt-10 border-t border-blue pt-4">
+            <p class="label">{hello.formField}</p>
+            <p class="notice mt-1">{hello.unsetForm}</p>
+          </div>
+        )}
+        <p class="micro mt-6">{hello.hours}</p>
+      </div>
+    </div>
+  </div>
+</Base>

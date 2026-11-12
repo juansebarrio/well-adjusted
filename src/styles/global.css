@@ -1,0 +1,631 @@
+@import 'tailwindcss';
+
+/*
+  The Institute Journal — visual system.
+  Paper everywhere. Ink for reading. Blue for the institution.
+  Oxide for stamps and notices. Lime is the marker and appears in exactly
+  three jobs: the tagline highlight, the pull quote, the "Live" dot.
+*/
+
+@theme {
+  --color-paper: #f4f1ea;
+  --color-ink: #141311;
+  --color-ink-soft: #55514a; /* secondary mono text, 7:1 on paper */
+  --color-blue: #4f67b1; /* 4.8:1 on paper */
+  --color-blue-deep: #3f5596; /* blue for small text on peach panels, 5.7:1 */
+  --color-oxide: #b44b28; /* 4.7:1 on paper. Never on peach. */
+  --color-lime: #d4f23a;
+  --color-peach: #f6e3d6;
+
+  --font-serif: 'Libre Bodoni Variable', 'Libre Bodoni', 'Bodoni 72', Didot, Georgia, serif;
+  --font-mono: 'JetBrains Mono Variable', 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+
+  --breakpoint-wide: 70rem;
+}
+
+@layer base {
+  html {
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-serif);
+    font-size: 100%;
+    line-height: 1.55;
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+    scroll-padding-top: 2rem;
+  }
+
+  body {
+    min-height: 100dvh;
+    font-size: 1.125rem;
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    background: var(--color-blue);
+    color: var(--color-paper);
+  }
+
+  a {
+    color: var(--color-blue);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+    transition: color 160ms ease;
+  }
+  a:hover {
+    color: var(--color-ink);
+  }
+
+  /* Focus, institute style: a blue rule around the thing. */
+  :focus-visible {
+    outline: 2px solid var(--color-blue);
+    outline-offset: 3px;
+    border-radius: 0;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-weight: 400;
+    line-height: 1.08;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+
+  hr {
+    border: 0;
+    border-top: 1px solid var(--color-blue);
+  }
+}
+
+@layer components {
+  /* ---------- Layout ---------- */
+
+  .shell {
+    width: 100%;
+    max-width: 78rem;
+    margin-inline: auto;
+    padding-inline: clamp(1.25rem, 5vw, 4rem);
+  }
+
+  /* Margin (mono labels) · reading column · margin (notes, stamp, bb.) */
+  .sheet {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 1rem;
+  }
+  @media (min-width: 70rem) {
+    .sheet {
+      grid-template-columns: 10.5rem minmax(0, 41rem) minmax(0, 1fr);
+      column-gap: 2.5rem;
+      row-gap: 0;
+    }
+    .sheet > .sheet-margin {
+      grid-column: 1;
+    }
+    .sheet > .sheet-body {
+      grid-column: 2;
+    }
+    .sheet > .sheet-aside {
+      grid-column: 3;
+    }
+    .sheet > .sheet-span {
+      grid-column: 2 / -1;
+    }
+  }
+
+  .measure {
+    max-width: 41rem;
+  }
+
+  .rule {
+    border-top: 1px solid var(--color-blue);
+  }
+
+  /* ---------- The bureaucratic voice ---------- */
+
+  .mono {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    line-height: 1.6;
+    letter-spacing: 0.02em;
+  }
+
+  .label {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    line-height: 1.5;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-blue);
+  }
+
+  .micro {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    line-height: 1.6;
+    color: var(--color-ink-soft);
+  }
+
+  .notice {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    line-height: 1.6;
+    color: var(--color-oxide);
+  }
+
+  /* ---------- The editorial voice ---------- */
+
+  .masthead {
+    font-family: var(--font-serif);
+    font-weight: 400;
+    font-size: clamp(3.1rem, 12.2vw, 9.25rem);
+    line-height: 0.92;
+    letter-spacing: -0.035em;
+    text-wrap: balance;
+  }
+  .masthead .mark,
+  .wordmark .mark {
+    color: var(--color-blue);
+  }
+
+  .wordmark {
+    font-family: var(--font-serif);
+    font-size: 1.375rem;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    color: var(--color-ink);
+    text-decoration: none;
+  }
+
+  .tagline {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: clamp(1.5rem, 4.6vw, 2.5rem);
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+  }
+
+  /* The institute's marker. */
+  .marker {
+    background: var(--color-lime);
+    color: var(--color-ink);
+    padding: 0.04em 0.18em;
+    margin-inline: -0.06em;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+  }
+
+  .display {
+    font-size: clamp(2.25rem, 7.2vw, 4.5rem);
+    line-height: 1.02;
+    letter-spacing: -0.025em;
+  }
+
+  .lede {
+    font-size: clamp(1.25rem, 3vw, 1.5rem);
+    line-height: 1.4;
+  }
+
+  /* ---------- Buttons and fields ---------- */
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 3rem;
+    padding: 0.55rem 1.5rem 0.65rem;
+    background: var(--color-blue);
+    color: var(--color-paper);
+    font-family: var(--font-serif);
+    font-size: 1.1875rem;
+    line-height: 1.2;
+    border: 1px solid var(--color-blue);
+    cursor: pointer;
+    text-decoration: none;
+    transition:
+      background-color 160ms ease,
+      border-color 160ms ease;
+  }
+  .btn:hover {
+    background: var(--color-ink);
+    border-color: var(--color-ink);
+    color: var(--color-paper);
+  }
+  .btn:focus-visible {
+    outline-offset: 4px;
+  }
+
+  .panel {
+    background: var(--color-peach);
+    border-top: 1px solid var(--color-blue);
+    padding: clamp(1.25rem, 4vw, 2rem);
+  }
+  .panel .label {
+    color: var(--color-blue-deep);
+  }
+  .panel .micro {
+    color: #4b4640;
+  }
+
+  .field {
+    width: 100%;
+    min-height: 3rem;
+    padding: 0.6rem 0.85rem;
+    background: var(--color-paper);
+    color: var(--color-ink);
+    border: 1px solid var(--color-ink);
+    border-radius: 0;
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    line-height: 1.4;
+  }
+  .field::placeholder {
+    color: #5f5a53;
+    opacity: 1;
+  }
+  .field:focus-visible {
+    outline: 2px solid var(--color-blue);
+    outline-offset: 2px;
+  }
+
+  .check {
+    display: flex;
+    gap: 0.7rem;
+    align-items: flex-start;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    line-height: 1.6;
+    cursor: pointer;
+  }
+  .check input {
+    appearance: none;
+    flex: none;
+    width: 1.125rem;
+    height: 1.125rem;
+    margin-top: 0.05rem;
+    background: var(--color-paper);
+    border: 1px solid var(--color-ink);
+    border-radius: 0;
+    cursor: pointer;
+    display: grid;
+    place-content: center;
+  }
+  .check input::after {
+    content: '';
+    width: 0.6rem;
+    height: 0.6rem;
+    background: var(--color-blue);
+    opacity: 0;
+    transition: opacity 120ms ease;
+  }
+  .check input:checked::after {
+    opacity: 1;
+  }
+
+  /* ---------- Stamps: oxide, slightly off, one per screen ---------- */
+
+  .stamp {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 0.8125rem;
+    line-height: 1.2;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-oxide);
+    padding: 0.5rem 0.8rem 0.45rem;
+    border: 2px solid var(--color-oxide);
+    outline: 1px solid var(--color-oxide);
+    outline-offset: 2px;
+    transform: rotate(-4deg);
+    transform-origin: center;
+    white-space: nowrap;
+  }
+
+  /* ---------- Status: the only lime dot on the site ---------- */
+
+  .status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-ink);
+  }
+  .status-dot {
+    width: 0.625rem;
+    height: 0.625rem;
+    border-radius: 50%;
+    background: var(--color-lime);
+    box-shadow: 0 0 0 1px var(--color-ink);
+  }
+  .status-coming {
+    color: var(--color-ink-soft);
+  }
+
+  /* ---------- Specimen cards ---------- */
+
+  .specimen {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding-block: 1.25rem 1.5rem;
+    border-top: 1px solid var(--color-blue);
+    height: 100%;
+  }
+  .specimen-title {
+    font-size: clamp(1.5rem, 3.4vw, 1.875rem);
+    line-height: 1.1;
+    letter-spacing: -0.015em;
+  }
+  .specimen-title a {
+    color: var(--color-ink);
+    text-decoration: none;
+  }
+  .specimen-title a:hover {
+    color: var(--color-blue);
+  }
+  .specimen-coming .specimen-title {
+    color: var(--color-ink-soft);
+  }
+
+  .arrow-link {
+    font-family: var(--font-serif);
+    font-size: 1.125rem;
+    display: inline-block;
+    padding-block: 0.35rem;
+  }
+
+  /* ---------- Prose (essays, manifesto, project pages) ---------- */
+
+  .prose {
+    font-size: 1.1875rem; /* 19px on small screens */
+    line-height: 1.55;
+    max-width: 33em; /* ≈ 66 characters of Libre Bodoni */
+    hanging-punctuation: first;
+  }
+  @media (min-width: 40rem) {
+    .prose {
+      font-size: 1.25rem; /* 20px */
+    }
+  }
+  .prose > * + * {
+    margin-top: 1.1em;
+  }
+  .prose h2 {
+    font-size: 1.5em;
+    line-height: 1.15;
+    margin-top: 2em;
+  }
+  .prose h3 {
+    font-size: 1.2em;
+    font-style: italic;
+    margin-top: 1.8em;
+  }
+  .prose ol,
+  .prose ul {
+    padding-left: 1.3em;
+  }
+  .prose ol {
+    list-style: decimal;
+  }
+  .prose ul {
+    list-style: '— ';
+  }
+  .prose li + li {
+    margin-top: 0.45em;
+  }
+  .prose li::marker {
+    font-family: var(--font-mono);
+    font-size: 0.7em;
+    color: var(--color-blue);
+  }
+  .prose em {
+    font-style: italic;
+  }
+  .prose strong {
+    font-weight: 600;
+  }
+  .prose hr {
+    margin-block: 2.2em;
+    width: 4rem;
+  }
+
+  /* Pull quote: big serif, marked in lime. */
+  .prose blockquote {
+    margin-block: 2em;
+    font-size: 1.45em;
+    line-height: 1.32;
+    font-style: italic;
+    letter-spacing: -0.01em;
+  }
+  .prose blockquote p {
+    display: inline;
+    background: var(--color-lime);
+    color: var(--color-ink);
+    padding: 0.06em 0.2em;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+  }
+
+  /* ---------- Notes: footnotes on paper, margin slips on wide screens ---------- */
+
+  [data-footnote-ref] {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-style: normal;
+    letter-spacing: 0;
+    text-decoration: none;
+    padding: 0.35em 0.25em;
+    margin: -0.35em 0;
+  }
+  sup:has([data-footnote-ref]) {
+    line-height: 0;
+  }
+  [data-footnote-ref]::before {
+    content: '[';
+  }
+  [data-footnote-ref]::after {
+    content: ']';
+  }
+
+  .footnotes {
+    margin-top: 3rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--color-blue);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    line-height: 1.65;
+    max-width: 41rem;
+    color: var(--color-ink);
+  }
+  .footnotes h2 {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    line-height: 1.5;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-blue);
+    margin: 0 0 0.6rem;
+  }
+  .footnotes ol {
+    list-style: decimal;
+    padding-left: 1.6rem;
+    margin: 0;
+  }
+  .footnotes li + li {
+    margin-top: 0.5rem;
+  }
+  .footnotes li::marker {
+    color: var(--color-blue);
+    font-family: var(--font-mono);
+    font-size: 1em;
+  }
+  .footnotes p {
+    margin: 0;
+  }
+  .footnotes [data-footnote-backref] {
+    text-decoration: none;
+    padding: 0.4em;
+  }
+  .footnotes li:target {
+    outline: 1px solid var(--color-blue);
+    outline-offset: 4px;
+  }
+
+  /* On wide pointer screens the notes move to the margin and appear on hover or focus.
+     Essay footnotes ([data-persist]) stay printed at the foot as well. */
+  @media (min-width: 70rem) and (hover: hover) {
+    html.notes-on .footnotes:not([data-persist]) {
+      display: none;
+    }
+  }
+
+  .margin-slip {
+    position: absolute;
+    z-index: 5;
+    width: 13.5rem;
+    padding: 0.6rem 0 0 0.9rem;
+    border-left: 1px solid var(--color-blue);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    line-height: 1.6;
+    color: var(--color-ink);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition:
+      opacity 180ms ease,
+      visibility 0s linear 180ms;
+  }
+  .margin-slip::before {
+    content: attr(data-n);
+    display: block;
+    color: var(--color-blue);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-top: -0.6rem;
+    margin-bottom: 0.2rem;
+  }
+  .margin-slip.is-on {
+    opacity: 1;
+    visibility: visible;
+    transition:
+      opacity 180ms ease,
+      visibility 0s;
+  }
+
+  .annot {
+    text-decoration: underline dotted var(--color-blue);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.25em;
+  }
+
+  /* ---------- bb., resident ---------- */
+
+  .bb-eyes {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: bb-blink 7s infinite;
+  }
+  @keyframes bb-blink {
+    0%,
+    94.5%,
+    100% {
+      transform: scaleY(1);
+    }
+    96.5% {
+      transform: scaleY(0.08);
+    }
+  }
+
+  /* ---------- Embedded forms ---------- */
+
+  .tally {
+    display: block;
+    width: 100%;
+    border: 0;
+    background: transparent;
+  }
+
+  .skip {
+    position: absolute;
+    left: 1rem;
+    top: -4rem;
+    z-index: 10;
+    background: var(--color-paper);
+    padding: 0.6rem 0.9rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    border: 1px solid var(--color-blue);
+  }
+  .skip:focus {
+    top: 1rem;
+  }
+}
+
+/* Nothing moves except fades and the blink; and for some people, not even those. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* remark-gfm marks the footnotes heading sr-only; the institute prints it.
+   Unlayered on purpose, so it wins over Tailwind's .sr-only utility. */
+.footnotes h2.sr-only {
+  position: static;
+  width: auto;
+  height: auto;
+  margin: 0 0 0.6rem;
+  clip-path: none;
+  overflow: visible;
+  white-space: normal;
+}

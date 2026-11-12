@@ -1,0 +1,33 @@
+---
+import { footer } from '../copy';
+import { SUBSTACK_URL, INSTAGRAM_URL } from '../config';
+import Bb from './Bb.astro';
+interface Props { showBb?: boolean }
+const { showBb = true } = Astro.props;
+
+// "Rotating" without moving: each page gets its own line, fixed by its path.
+const path = Astro.url.pathname.replace(/\/$/, '') || '/';
+const hash = [...path].reduce((sum, ch) => (sum * 31 + ch.charCodeAt(0)) >>> 0, 7);
+const line = footer.rotating[hash % footer.rotating.length];
+const links = [
+  { href: SUBSTACK_URL, label: footer.substack },
+  { href: INSTAGRAM_URL, label: footer.instagram },
+].filter((l) => l.href);
+---
+<footer class="shell mt-20 pb-10 sm:mt-28">
+  {showBb && <div class="mb-6 flex justify-end"><Bb size={84} /></div>}
+  <div class="rule"></div>
+  <div class="mono flex flex-col gap-2 pt-4 sm:flex-row sm:items-baseline sm:justify-between sm:gap-8">
+    <p>{footer.line}</p>
+    {
+      links.length > 0 && (
+        <ul class="flex gap-6">
+          {links.map((l) => (
+            <li><a class="inline-block py-2 sm:py-0" href={l.href} rel="noopener">{l.label}</a></li>
+          ))}
+        </ul>
+      )
+    }
+  </div>
+  <p class="micro mt-3 sm:mt-1">{line}</p>
+</footer>

@@ -1,0 +1,19 @@
+---
+/**
+ * A Tally form in an iframe. Accepts a share URL (tally.so/r/ID) or an embed URL.
+ * When the form is submitted, Tally posts a message to the page; scripts/site.ts
+ * turns that into the Plausible event named in `event`, if any.
+ */
+interface Props { url: string; title: string; height?: number; event?: string }
+const { url, title, height = 560, event } = Astro.props;
+
+let src = '';
+if (url) {
+  const u = new URL(url.replace('tally.so/r/', 'tally.so/embed/'));
+  u.searchParams.set('alignLeft', '1');
+  u.searchParams.set('hideTitle', '1');
+  u.searchParams.set('transparentBackground', '1');
+  src = u.toString();
+}
+---
+{src && <iframe class="tally" src={src} title={title} height={height} loading="lazy" data-tally-event={event} />}
