@@ -1,0 +1,19 @@
+---
+/**
+ * Substack's official embed. Switched off by default.
+ * To use it instead of the institute's form, set ENROLMENT_MODE = 'embed' in src/config.ts.
+ */
+import { enrolment } from '../copy';
+import { SUBSTACK_URL } from '../config';
+---
+{
+  SUBSTACK_URL && (
+    <iframe
+      class="mt-4 block w-full border-0 bg-paper"
+      src={`${SUBSTACK_URL}/embed`}
+      title={enrolment.heading}
+      height="320"
+      loading="lazy"
+    />
+  )
+}

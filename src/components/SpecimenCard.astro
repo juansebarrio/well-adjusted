@@ -1,0 +1,38 @@
+---
+import { typo } from '../lib';
+import type { CollectionEntry } from 'astro:content';
+import { projects as copy } from '../copy';
+interface Props { project: CollectionEntry<'projects'>; level?: 'h2' | 'h3' }
+const { project, level: H = 'h3' } = Astro.props;
+const { status, ref, cta, page } = project.data;
+const title = typo(project.data.title);
+const blurb = typo(project.data.blurb);
+const live = status === 'live';
+const href = page ? `/projects/${project.id}` : undefined;
+const event = { 'data-event': 'project_open', 'data-props': JSON.stringify({ slug: project.id }) };
+---
+<article class:list={['specimen', !live && 'specimen-coming']}>
+  <div class="flex items-center justify-between gap-4">
+    <p class="label">{ref}</p>
+    {
+      live ? (
+        <p class="status"><span class="status-dot" aria-hidden="true" />{copy.live}</p>
+      ) : (
+        <p class="status status-coming">{copy.coming}</p>
+      )
+    }
+  </div>
+  <H class="specimen-title">
+    {href && live ? <a href={href} {...event}>{title}</a> : title}
+  </H>
+  {
+    live ? (
+      <>
+        {blurb && <p class="text-[1.0625rem] leading-normal">{blurb}</p>}
+        {href && <p class="mt-auto"><a class="arrow-link" href={href} {...event} aria-label={`${cta ?? title}: ${title}`}>{cta ?? title} →</a></p>}
+      </>
+    ) : (
+      <p class="micro">{copy.comingLine}</p>
+    )
+  }
+</article>

@@ -1,0 +1,16 @@
+---
+/**
+ * A numbered note attached to a phrase. Pairs with <Notes />, which prints the
+ * notes at the foot of the page. On wide screens the note appears in the margin
+ * on hover or keyboard focus (scripts/notes.ts); everywhere else it is a footnote.
+ */
+import { a11y } from '../copy';
+interface Props { n: number }
+const { n } = Astro.props;
+---
+<span class="annot" data-annot><slot /></span><sup><a
+    href={`#note-${n}`}
+    id={`noteref-${n}`}
+    data-footnote-ref
+    aria-describedby={`note-${n}`}
+    aria-label={`${a11y.noteRef} ${n}`}>{n}</a></sup>

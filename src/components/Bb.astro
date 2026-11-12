@@ -1,0 +1,28 @@
+---
+import { bb } from '../copy';
+interface Props { size?: number; caption?: boolean }
+const { size = 132, caption = true } = Astro.props;
+---
+<figure class="inline-flex flex-col items-start gap-2">
+  <svg
+    width={size}
+    height={Math.round(size * 1.08)}
+    viewBox="0 0 120 130"
+    role="img"
+    aria-label={bb.alt}
+    fill="none"
+  >
+    <path
+      d="M60 8c27 0 48 22 48 51v29c0 21-13 34-34 34H46c-21 0-34-13-34-34V59C12 30 33 8 60 8Z"
+      fill="var(--color-paper)"
+      stroke="var(--color-ink)"
+      stroke-width="2.5"
+      stroke-linejoin="round"
+    />
+    <g class="bb-eyes" fill="var(--color-ink)">
+      <ellipse cx="46" cy="60" rx="4.6" ry="7.4" />
+      <ellipse cx="72" cy="60" rx="4.6" ry="7.4" />
+    </g>
+  </svg>
+  {caption && <figcaption class="micro">{bb.caption}</figcaption>}
+</figure>

@@ -1,0 +1,37 @@
+---
+import { nav, site, a11y } from '../copy';
+interface Props { home?: boolean }
+const { home = false } = Astro.props;
+const path = Astro.url.pathname.replace(/\/$/, '') || '/';
+---
+<header class="shell pt-4 sm:pt-6">
+  <nav aria-label={a11y.navLabel}>
+    <ul class="mono flex flex-nowrap items-center justify-between gap-x-3 whitespace-nowrap text-[0.6875rem] sm:justify-start sm:gap-x-8 sm:text-xs">
+      {
+        nav.map((item) => {
+          const current = path === item.href || path.startsWith(item.href + '/');
+          return (
+            <li>
+              <a
+                href={item.href}
+                aria-current={current ? 'page' : undefined}
+                class:list={[
+                  'inline-block py-3 uppercase tracking-[0.06em] no-underline hover:underline',
+                  current ? 'text-ink underline' : 'text-blue',
+                ]}
+              >{item.label}</a>
+            </li>
+          );
+        })
+      }
+    </ul>
+  </nav>
+  <div class="rule"></div>
+  {
+    !home && (
+      <p class="pt-5">
+        <a class="wordmark" href="/">{site.mastheadLead} <span class="mark">{site.mastheadMark}</span></a>
+      </p>
+    )
+  }
+</header>

@@ -1,0 +1,67 @@
+---
+/**
+ * The institute's own enrolment form. No backend: it is a plain GET form that
+ * sends the browser to {SUBSTACK_URL}/subscribe?email=… in the same tab.
+ * Works without JavaScript; the script only reports the click to Plausible.
+ */
+import { enrolment } from '../copy';
+import { ENROLMENT_MODE, SUBSTACK_URL } from '../config';
+import SubstackEmbed from './SubstackEmbed.astro';
+
+interface Props { variant?: 'full' | 'small'; id?: string }
+const { variant = 'full', id = 'enrol' } = Astro.props;
+const small = variant === 'small';
+const page = Astro.url.pathname;
+---
+<section class="panel" aria-labelledby={`${id}-title`} id={id}>
+  <p class="label">{small ? enrolment.repeated : enrolment.field}</p>
+  {
+    small ? (
+      <h2 id={`${id}-title`} class="sr-only">{enrolment.heading}</h2>
+    ) : (
+      <>
+        <h2 id={`${id}-title`} class="mt-2 text-[clamp(1.75rem,5vw,2.5rem)]">{enrolment.heading}</h2>
+        <p class="mt-2 max-w-[30em]">{enrolment.lede}</p>
+      </>
+    )
+  }
+
+  {
+    ENROLMENT_MODE === 'embed' ? (
+      <SubstackEmbed />
+    ) : (
+      <form
+        class="mt-4 grid gap-4"
+        action={SUBSTACK_URL ? `${SUBSTACK_URL}/subscribe` : undefined}
+        method="get"
+        data-event="enrol_click"
+        data-event-on="submit"
+        data-props={JSON.stringify({ page })}
+      >
+        <div class="grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto]">
+          <div>
+            <label for={`${id}-email`} class="sr-only">{enrolment.inputLabel}</label>
+            <input
+              class="field"
+              id={`${id}-email`}
+              type="email"
+              name="email"
+              required
+              autocomplete="email"
+              inputmode="email"
+              spellcheck="false"
+              placeholder={enrolment.placeholder}
+            />
+          </div>
+          <button class="btn" type="submit" disabled={!SUBSTACK_URL}>{enrolment.button}</button>
+        </div>
+        <label class="check">
+          <input type="checkbox" required />
+          <span>{enrolment.consent}</span>
+        </label>
+        {!small && <p class="micro">{enrolment.micro}</p>}
+      </form>
+    )
+  }
+</section>
+{!SUBSTACK_URL && <p class="notice mt-2">{enrolment.unset}</p>}
