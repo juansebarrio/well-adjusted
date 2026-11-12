@@ -20,7 +20,8 @@ if (refs.length > 0) {
     const id = decodeURIComponent(ref.hash.slice(1));
     const note = document.getElementById(id);
     if (!note) continue;
-    if (!ref.hasAttribute('aria-describedby')) ref.setAttribute('aria-describedby', id);
+    // Markdown footnotes point this at the section heading; point it at the note itself.
+    ref.setAttribute('aria-describedby', id);
 
     const show = () => {
       if (!wide.matches) return;
