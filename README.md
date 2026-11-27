@@ -17,9 +17,11 @@ Requiere Node 22.23.4 o superior.
 | Qué | Dónde |
 | --- | --- |
 | Ensayos | `content/essays/*.md` |
+| Imágenes de los ensayos (exhibits) | `public/essays/<slug>/` |
 | Proyectos (specimens) | `content/projects/*.md` |
-| Manifiesto | `content/pages/the-thinking.md` |
-| Todo el texto de interfaz | `src/copy.ts` (los borradores llevan `// DRAFT`) |
+| About (`/the-thinking`) | `content/pages/about.md` |
+| Líneas de la home (lede, pregunta, lema, nombre del instituto) | `content/pages/home.md` |
+| Todo el resto del texto de interfaz | `src/copy.ts` (los borradores llevan `// DRAFT`) |
 | Variables y constantes | `src/config.ts` |
 | Colores, tipografía, componentes visuales | `src/styles/global.css` |
 
@@ -27,43 +29,61 @@ El nombre del archivo es el slug de la URL: `content/essays/mi-ensayo.md` → `/
 
 ## Agregar un ensayo
 
-Un archivo nuevo en `content/essays/`. Hay dos modos, y los decide el archivo:
-
-- **Solo tarjeta**: el archivo tiene solo la cabecera. Aparece en `/read-something` y el link va a Substack.
-- **Página propia**: el archivo tiene cuerpo debajo de la cabecera. Aparece en el índice y además se publica completo en `/read-something/[slug]`.
+Un archivo nuevo en `content/essays/`. Cada ensayo se publica completo en `/read-something/[slug]`
+y aparece en el índice y en la home (los tres primeros por `order`).
 
 ```md
 ---
-title: My Mother's Furniture Does Not Believe in Borders
-deck: On the armchairs that follow us, and what a sideboard knows about staying.
-filedUnder: Migration, domestic
-readingTime: 6 minutes
-substackUrl: https://ejemplo.substack.com/p/el-ensayo
-excerpt: The sofa arrived three months after we did.
-order: 1
+title: "How Many Times Can a Person Start Over Before It Becomes a Personality Disorder?"
+deck: "A field report on migration, reinvention, and the administrative burden of having a self."
+kind: "Field Report"
+number: "002"
+form: "WA-7/E"
+filedUnder: "migration, reinvention, paperwork"
+readingTime: "14 minutes"
+status: final
+order: 2
 ---
 
-El cuerpo es opcional. Si está, el ensayo tiene página propia.
+El texto, en Markdown.
 
-Una nota al pie se escribe así.[^1]
+Una nota se escribe así.[^1]
 
-> Una cita con `>` se convierte en la pull quote con marcador lima. Una por ensayo.
+<figure class="exhibit"><img src="/essays/mi-ensayo/image1.png" alt="" loading="lazy"><figcaption>Exhibit A</figcaption></figure>
 
-[^1]: El texto de la nota. Sale numerada, en mono, al pie.
+[^1]: **Un título opcional en negrita.** El texto de la nota.
 ```
 
-| Campo | Obligatorio | Qué es |
-| --- | --- | --- |
-| `title` | sí | Título |
-| `deck` | sí | Bajada, una línea |
-| `filedUnder` | sí | "Filed under" |
-| `readingTime` | sí | Texto libre: `6 minutes` |
-| `substackUrl` | no | Link al original. Sin esto y sin cuerpo, la tarjeta no lleva link |
-| `excerpt` | no | Un párrafo corto para la tarjeta |
-| `order` | no | Orden en el índice, de menor a mayor |
-| `draft` | no | `true` = se ve en local y en los previews, nunca en producción |
+| Campo | Qué es |
+| --- | --- |
+| `title` | Título |
+| `deck` | Bajada, una línea |
+| `kind` | `Bulletin`, `Field Report` o `Case Study`. Con `number` forma el rótulo: "Field Report No. 002" |
+| `number` | Entre comillas, para que `"002"` conserve los ceros |
+| `form` | Referencia del formulario: `WA-7/E` |
+| `filedUnder` | "Filed under" |
+| `readingTime` | Texto libre: `14 minutes` |
+| `status` | `final` = publicado. `draft` (o sin el campo) = se ve en local y en previews, nunca en producción |
+| `order` | Orden en el índice y en la home, de menor a mayor |
 
-Las comillas y apóstrofes rectos de título, bajada y extracto se convierten solos en tipográficos.
+Las comillas y apóstrofes rectos se convierten solos en tipográficos.
+
+**Notas.** `[^1]` en el texto y `[^1]: …` al final. En escritorio aparecen al margen al pasar el cursor
+o con el foco del teclado; en móvil y al pie del ensayo salen como lista numerada.
+
+**Pull quote.** Una cita con `>` sale grande y con el marcador lima. Los tres ensayos actuales no usan ninguna.
+
+**Exhibits.** Son los `<figure class="exhibit">` que la autora coloca a mano. Para agregar imágenes:
+
+1. Copiar los archivos a `public/essays/<slug>/`.
+2. Correr `node scripts/optimize-images.mjs`. Limita el ancho a 1200 px, recomprime el archivo con el mismo nombre
+   y genera un `.webp` al lado. Se puede correr de nuevo sin problema: saltea lo que ya está hecho.
+3. Commitear las dos versiones de cada imagen.
+
+El sitio arma solo el `<picture>` (webp con el original de respaldo) y le pone ancho y alto.
+Si una imagen referenciada no existe, el build falla y dice cuál.
+
+Los comentarios HTML (`<!-- … -->`) quedan en el archivo y no se publican.
 
 ## Agregar un proyecto
 
@@ -87,7 +107,6 @@ order: 2
 | `cta` | no | Texto del link de la tarjeta. Solo si está `live` |
 | `order` | no | Orden en la grilla. Los tres primeros salen en la home |
 | `page` | no | `false` = aparece en la grilla pero todavía no tiene página |
-| `placeholder` | no | `true` = la página muestra el aviso de texto provisorio |
 
 Un proyecto `coming` muestra "Opens when it opens." y nada más, tenga o no texto en el archivo.
 Para abrirlo: cambiar a `status: live`, agregar `blurb` y `cta`, y escribir el cuerpo en Markdown.
@@ -95,10 +114,13 @@ Para abrirlo: cambiar a `status: live`, agregar `blurb` y `cta`, y escribir el c
 El formulario de Tally y la nota sobre la dirección postal están atados a `the-letter-office`
 (`src/pages/projects/[slug].astro`). Si otro proyecto necesita formulario, se agrega ahí.
 
-## El manifiesto
+## About y home
 
-`content/pages/the-thinking.md`. Pegar el texto de la clienta debajo de la cabecera y poner `draft: false`:
-desaparecen el sello DRAFT y el aviso. Las notas (`[^1]`) salen al margen en escritorio y al pie en móvil.
+`content/pages/about.md` es la página `/the-thinking` (título "About"). `portrait` es la imagen que va al costado.
+La última línea en cursiva del texto no se repite: la página cierra con esa frase en mono (`about.closing` en `src/copy.ts`).
+
+`content/pages/home.md` tiene cuatro líneas de la home: `lede`, `question`, `motto` e `institute_name`.
+El nombre del instituto también sale en el pie de todas las páginas.
 
 ## Variables de entorno
 
@@ -137,7 +159,7 @@ Goals a crear a mano en Plausible → Site settings → Goals → Add goal → C
 | --- | --- | --- |
 | `enrol_click` | `page` | Se envía el formulario de enrolment |
 | `project_open` | `slug` | Click en una tarjeta de proyecto |
-| `essay_open` | `slug`, `destination` (`site` o `substack`) | Click en un ensayo, o en "Continue reading on Substack" |
+| `essay_open` | `slug`, `destination` (hoy siempre `site`) | Click en un ensayo, desde el índice o desde la home |
 | `letter_office_signup` | ninguna | Tally avisa que el formulario de The Letter Office se envió |
 | `contact_open` | ninguna | Click en el mail de `/say-hello` |
 
@@ -146,9 +168,8 @@ Para ver las propiedades en el panel hay que darlas de alta en Site settings →
 
 ## Borradores
 
-`draft: true` en un ensayo: se ve en `npm run dev` y en los previews de Vercel, con la etiqueta
-"Draft — not shown in production" y `noindex`. En producción no existe: ni en el índice, ni la página, ni en el sitemap.
-`content/essays/placeholder.md` está así, para probar la plantilla de ensayo.
+`status: draft` en un ensayo: se ve en `npm run dev` y en los previews de Vercel, con una etiqueta y `noindex`.
+En producción no existe: ni en el índice, ni la página, ni en el sitemap.
 
 Los previews además sirven un `robots.txt` que bloquea todo. Producción lo abre y publica el sitemap.
 
@@ -175,4 +196,4 @@ Los pasos 3 y 4 son los únicos con corte, y es de segundos. Para volver atrás 
 
 ## Capturas
 
-`reports/`: las páginas a 390 y 1440 px.
+`reports/`: las páginas y los tres ensayos a 390 y 1440 px, más `INFORME.md`.
