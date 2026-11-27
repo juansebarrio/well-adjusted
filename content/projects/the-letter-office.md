@@ -5,7 +5,6 @@ ref: Specimen 01
 blurb: A small postal service for things that are easier to write than to say. You sign up. A letter arrives. On paper.
 cta: Visit the office
 order: 1
-placeholder: true
 ---
 
 ## What it is
