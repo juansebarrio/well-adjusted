@@ -8,8 +8,11 @@ import SpecimenCard from '../components/SpecimenCard.astro';
 import NoteRef from '../components/NoteRef.astro';
 import Notes from '../components/Notes.astro';
 import { home, site } from '../copy';
+import { getEssays, essayLabel, getHome, typo } from '../lib';
 
 const specimens = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order).slice(0, 3);
+const essays = (await getEssays()).slice(0, 3);
+const { lede, question, motto, instituteName } = await getHome();
 ---
 <Base title={home.title} home>
   <div class="shell">
@@ -26,11 +29,15 @@ const specimens = (await getCollection('projects')).sort((a, b) => a.data.order 
       <p class="tagline [grid-area:tagline]">
         {site.tagline} <span class="marker">{site.taglineMarked}</span>
       </p>
-      <p class="lede measure [grid-area:what]">{site.whatItIs}</p>
+      <div class="measure [grid-area:what]">
+        <p class="lede">{lede}</p>
+        <p class="question mt-4">{question}</p>
+      </div>
 
       <div class="[grid-area:filed]" data-notes-column>
         <h2 class="label">{home.filedLabel}</h2>
-        <dl class="mono mt-2">
+        <p class="mono mt-2">{instituteName}</p>
+        <dl class="mono">
           {
             home.filed.map((row, i) => (
               <div class="flex gap-2">
@@ -40,6 +47,7 @@ const specimens = (await getCollection('projects')).sort((a, b) => a.data.order 
             ))
           }
         </dl>
+        <p class="mono">{motto}</p>
       </div>
 
       <div class="[grid-area:stamp] self-center justify-self-start pl-2 wide:self-start wide:pl-0 wide:pt-9">
@@ -69,6 +77,35 @@ const specimens = (await getCollection('projects')).sort((a, b) => a.data.order 
       </ul>
       <p class="mt-4"><a class="arrow-link" href="/projects">{home.specimensAll} →</a></p>
     </section>
+
+    {
+      essays.length > 0 && (
+        <section class="mt-14 sm:mt-16" aria-labelledby="read-title">
+          <div class="sheet">
+            <h2 id="read-title" class="label sheet-margin">{home.readLabel}</h2>
+            <p class="sheet-body lede">{home.readLede}</p>
+          </div>
+          <ul class="mt-6 grid gap-x-10 sm:grid-cols-3">
+            {essays.map((entry) => {
+              const href = `/read-something/${entry.id}`;
+              const props = JSON.stringify({ slug: entry.id, destination: 'site' });
+              return (
+                <li>
+                  <article class="specimen">
+                    <p class="label">{essayLabel(entry)}</p>
+                    <h3 class="specimen-title">
+                      <a href={href} data-event="essay_open" data-props={props}>{typo(entry.data.title)}</a>
+                    </h3>
+                    <p class="text-[1.0625rem] italic leading-normal">{typo(entry.data.deck)}</p>
+                  </article>
+                </li>
+              );
+            })}
+          </ul>
+          <p class="mt-4"><a class="arrow-link" href="/read-something">{home.readAll} →</a></p>
+        </section>
+      )
+    }
 
     <div class="sheet"><div class="sheet-body"><Notes items={home.notes} /></div></div>
 

@@ -29,9 +29,12 @@ if (refs.length > 0) {
       const box = column.getBoundingClientRect();
       const left = box.right + window.scrollX + 40;
       if (left + 216 > document.documentElement.clientWidth - 16) return;
+      // A copy of the note as written (a bold title stays bold), minus the "back" arrow.
       const copy = note.cloneNode(true) as HTMLElement;
       copy.querySelectorAll('[data-footnote-backref]').forEach((el) => el.remove());
-      slip.textContent = copy.textContent?.trim() ?? '';
+      copy.querySelectorAll('[id]').forEach((el) => el.removeAttribute('id'));
+      copy.querySelectorAll('a').forEach((el) => el.setAttribute('tabindex', '-1'));
+      slip.replaceChildren(...Array.from(copy.childNodes));
       slip.dataset.n = `Note ${ref.textContent?.trim() ?? ''}`;
       slip.style.left = `${left}px`;
       slip.style.top = `${ref.getBoundingClientRect().top + window.scrollY - 6}px`;

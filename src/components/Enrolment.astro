@@ -8,13 +8,13 @@ import { enrolment } from '../copy';
 import { ENROLMENT_MODE, SUBSTACK_URL } from '../config';
 import SubstackEmbed from './SubstackEmbed.astro';
 
-interface Props { variant?: 'full' | 'small'; id?: string }
-const { variant = 'full', id = 'enrol' } = Astro.props;
+interface Props { variant?: 'full' | 'small'; id?: string; label?: string }
+const { variant = 'full', id = 'enrol', label = enrolment.field } = Astro.props;
 const small = variant === 'small';
 const page = Astro.url.pathname;
 ---
 <section class="panel" aria-labelledby={`${id}-title`} id={id}>
-  <p class="label">{small ? enrolment.repeated : enrolment.field}</p>
+  <p class="label">{label}</p>
   {
     small ? (
       <h2 id={`${id}-title`} class="sr-only">{enrolment.heading}</h2>

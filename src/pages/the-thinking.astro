@@ -1,36 +1,84 @@
 ---
 import { getEntry, render } from 'astro:content';
 import Base from '../layouts/Base.astro';
-import Stamp from '../components/Stamp.astro';
-import { thinking } from '../copy';
+import { about, essay } from '../copy';
 
-const entry = await getEntry('pages', 'the-thinking');
-if (!entry) throw new Error('content/pages/the-thinking.md is missing');
+const entry = await getEntry('pages', 'about');
+if (!entry) throw new Error('content/pages/about.md is missing');
 const { Content } = await render(entry);
-const { title, deck, draft } = entry.data;
+const { title = 'About', deck, form, portrait } = entry.data;
 ---
-<Base title={thinking.title} description={thinking.description}>
+<Base title={title} description={deck}>
   <article class="shell mt-12 sm:mt-16">
-    <div class="sheet">
-      <p class="label sheet-margin wide:pt-3">{thinking.formRef}</p>
-      <header class="sheet-body">
-        <p class="label">{thinking.eyebrow}</p>
-        <h1 class="display mt-3">{title}</h1>
+    <div class="about">
+      {form && <p class="label about-margin wide:pt-3">{essay.formPrefix} {form}</p>}
+      <header class="about-head">
+        <h1 class="display">{title}</h1>
         {deck && <p class="lede mt-5 italic">{deck}</p>}
       </header>
       {
-        draft && (
-          <div class="sheet-aside mt-2 wide:mt-10">
-            <Stamp text={thinking.draftStamp} tilt={5} />
-            <p class="notice mt-4 max-w-[22em]">{thinking.draftNotice}</p>
-          </div>
+        portrait && (
+          <figure class="exhibit about-portrait">
+            <picture>
+              <source srcset={portrait.replace(/\.(png|jpe?g)$/i, '.webp')} type="image/webp" />
+              <img src={portrait} alt={about.portraitAlt} width="735" height="716" decoding="async" fetchpriority="high" />
+            </picture>
+          </figure>
         )
       }
-    </div>
-    <div class="sheet mt-10 sm:mt-12">
-      <div class="sheet-body prose" data-notes-column>
-        <Content />
+      <div class="about-body">
+        <div class="prose" data-notes-column>
+          <Content />
+        </div>
+        <p class="mono mt-12 border-t border-blue pt-4">{about.closing}</p>
       </div>
     </div>
   </article>
 </Base>
+
+<style>
+  /* Small screens: title, image, text. Wide screens: the image sits to the right of the text. */
+  .about {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 1rem;
+  }
+  .about-portrait {
+    margin-block: 1.5rem 0.5rem;
+    max-width: 22rem;
+  }
+  .about-body {
+    margin-top: 1rem;
+  }
+  /* The text closes with the same line, in italics; the page prints it once, in mono. */
+  .about-body :global(.prose > p:last-child:has(> em:only-child)) {
+    display: none;
+  }
+  @media (min-width: 70rem) {
+    .about {
+      grid-template-columns: 10.5rem minmax(0, 1fr) 17rem;
+      column-gap: 2.5rem;
+      row-gap: 0;
+    }
+    .about-margin {
+      grid-column: 1;
+      grid-row: 1;
+    }
+    .about-head {
+      grid-column: 2;
+      grid-row: 1;
+    }
+    .about-body {
+      grid-column: 2;
+      grid-row: 2;
+      margin-top: 2.75rem;
+    }
+    .about-portrait {
+      grid-column: 3;
+      grid-row: 2;
+      align-self: start;
+      margin-block: 3.2rem 0;
+      max-width: none;
+    }
+  }
+</style>

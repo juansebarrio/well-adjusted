@@ -14,14 +14,13 @@ export const site = {
   mastheadMark: 'bb.',
   tagline: 'Think Fairuz meets Freud.',
   taglineMarked: 'No one gets along.',
-  whatItIs:
-    'An institute of one, studying psychology, migration, identity and the general absurdity of being alive.',
+  // The home lede, the question, the motto and the institute's name come from content/pages/home.md.
   description:
-    'An independent journal published by a very small institute. Psychology, migration, identity and the general absurdity of being alive.', // DRAFT
+    'An institute of one, investigating psychology, culture, identity, and the general weirdness of being human.',
 };
 
 export const nav = [
-  { href: '/the-thinking', label: 'Think' }, // DRAFT (labels)
+  { href: '/the-thinking', label: 'About' },
   { href: '/projects', label: 'Take part' }, // DRAFT
   { href: '/read-something', label: 'Read something' },
   { href: '/say-hello', label: 'Say hello' },
@@ -37,6 +36,7 @@ export const home = {
   notice: ['Notice no. 0001', 'Issued: today, probably', 'Valid until further notice'],
   issue: 'The Institute Journal · Issue 00',
   filedLabel: 'Filed',
+  /** The institute's name goes above these rows and the motto below; both from home.md. */
   filed: [
     { field: 'Dept.', value: 'of Adjustment' },
     { field: 'Staff', value: '1' },
@@ -47,6 +47,9 @@ export const home = {
   specimensLabel: 'Specimens 01–03',
   specimensLede: 'Things the Institute runs, or intends to.', // DRAFT
   specimensAll: 'See the full register',
+  readLabel: 'Read something',
+  readLede: 'Three pieces, filed in order.', // DRAFT
+  readAll: 'See the index',
   closing: 'This notice was not approved. It was, however, printed.',
   notes: [
     'She was not asked. She reviews regardless.', // DRAFT
@@ -63,17 +66,17 @@ export const enrolment = {
   consent: 'I understand this is a newsletter, not a diagnosis.',
   button: 'Enrol me',
   micro: 'Opens Substack with your address filled in. Nothing is kept here.', // DRAFT
-  repeated: 'Repeated, in case you skipped it',
+  /** The label of the enrolment block that closes every essay. */
+  afterEssay: 'Field 01 — Enrolment · The next one arrives by email',
   unset: 'Notice: the enrolment desk is not connected yet (SUBSTACK_URL).',
 };
 
-export const thinking = {
-  title: 'The thinking',
-  description: 'The manifesto of the Institute, such as it is.', // DRAFT
-  formRef: 'Form WA-1/M',
-  eyebrow: 'Statement of position',
-  draftStamp: 'Draft',
-  draftNotice: 'Placeholder text. The real statement is with the author.',
+/** /the-thinking. Title, deck, text and image come from content/pages/about.md. */
+export const about = {
+  /** Printed in mono at the foot of the page. */
+  closing: 'Research ongoing. Conclusions provisional.',
+  /** The image beside the text is a meme, and its words are the point of it. */
+  portraitAlt: 'A meme. A child stands in front of a field on fire, with the words: I joke a lot. I don\u2019t play tho.',
 };
 
 export const projects = {
@@ -86,7 +89,6 @@ export const projects = {
   coming: 'Coming',
   comingLine: 'Opens when it opens.',
   back: 'Back to the register',
-  placeholderNotice: 'Placeholder text. The author has not signed this off.',
 };
 
 export const letterOffice = {
@@ -101,22 +103,20 @@ export const letterOffice = {
 
 export const read = {
   title: 'Read something',
-  description: 'Selected essays from the Institute Journal.', // DRAFT
+  description: 'Bulletins, field reports and case studies from the Institute.', // DRAFT
   formRef: 'Index WA-7',
   heading: 'Read something', // DRAFT
-  lede: 'Chosen essays. The rest live on Substack, where they were born.', // DRAFT
+  lede: 'Bulletins, field reports and case studies. Published here, in full.', // DRAFT
   empty: 'Nothing has been filed yet. The selection committee (staff: 1) is deliberating.', // DRAFT
   filedUnder: 'Filed under',
   readingTime: 'Reading time',
   readHere: 'Read it here',
-  readOnSubstack: 'Read on Substack',
-  draftLabel: 'Draft — not shown in production',
+  draftLabel: 'Not final — hidden in production',
 };
 
 export const essay = {
-  formRef: 'Form WA-7/E',
+  formPrefix: 'Form',
   stamp: 'Approved by no one',
-  continue: 'Continue reading on Substack',
   back: 'Back to the index',
   notesHeading: 'Notes',
 };
@@ -144,7 +144,8 @@ export const notFound = {
 };
 
 export const footer = {
-  line: 'well adjusted, bb. · an institute of one',
+  /** Printed after the institute's name (from home.md, in lowercase). */
+  suffix: 'an institute of one',
   substack: 'Substack',
   instagram: 'Instagram',
   /** One per page, picked by page path. All six are drafts. */

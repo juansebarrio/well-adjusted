@@ -14,7 +14,7 @@ export async function getStaticPaths() {
 
 interface Props { project: CollectionEntry<'projects'> }
 const { project } = Astro.props;
-const { status, ref, placeholder } = project.data;
+const { status, ref } = project.data;
 const title = typo(project.data.title);
 const blurb = typo(project.data.blurb);
 const live = status === 'live';
@@ -36,7 +36,6 @@ const isLetterOffice = project.id === 'the-letter-office';
         <h1 class="display mt-4">{title}</h1>
         {live && blurb && <p class="lede mt-5">{blurb}</p>}
         {!live && <p class="micro mt-6">{copy.comingLine}</p>}
-        {live && placeholder && <p class="notice mt-5">{copy.placeholderNotice}</p>}
       </header>
     </div>
 
